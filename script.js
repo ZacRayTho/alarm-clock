@@ -7,7 +7,10 @@ const format = document.getElementById("format");
 let h12 = false;
 const snooze = document.getElementById("snooze");
 let test = new Date();
+const audio = new Audio('sound/alarm.wav');
 
+const month = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 // function time () {
 //     let a = test.getHours();
 //     let b = test.getMinutes();
@@ -33,40 +36,56 @@ setInterval(function () {
 submit.addEventListener("click", () => {
     set.innerHTML = alarm.value;
     set2 = alarm.value;
+    if (h12 == true){
+        let h = set2.slice(0, 2);
+        let temp = h;
+        if (h > 12) {
+            h = Number(h) - 12;
+            set2.replace(temp, "0" + h);
+        }
+    }
 })
 
 // every second check if clock value equals alarm value
 setInterval(function () {
     if (clock.innerHTML.slice(10, 18) == set.innerHTML + ":00") {
+        audio.play();
         //snooze button 
-        if (confirm("snooze for 5?")) {
-            //cut the minutes from the time
-            let x = set2.slice(3, 5);
-            let temp = x;
-            //add 5 minutes ,if over 59,subtract to "rollover" clock
-            x = Number(x) + 5;
-            if (x > 59) {
-                x -= 60;
-                let y = set2.slice(0, 2)
-                y = Number(y) + 1;
-                //check if format is 12h or 24h
-                if (h12 == false) {
-                    if (y == 24) {
-                        y -= 24;
+        setTimeout(() => {
+            if (confirm("snooze for 5?")) {
+                audio.pause();
+                audio.currentTime = 0;
+                //cut the minutes from the time
+                let x = set2.slice(3, 5);
+                let temp = x;
+                //add 5 minutes ,if over 59,subtract to "rollover" clock
+                x = Number(x) + 5;
+                if (x > 59) {
+                    x -= 60;
+                    let y = set2.slice(0, 2)
+                    y = Number(y) + 1;
+                    //check if format is 12h or 24h
+                    if (h12 == false) {
+                        if (y == 24) {
+                            y -= 24;
+                        }
                     }
-                }
-                else {
-                    if (y == 13) {
-                        y -= 12;
+                    else {
+                        if (y == 13) {
+                            y -= 12;
+                        }
                     }
+                    set.innerHTML = y + ":0" + x;
+                    return;
                 }
-                set.innerHTML = y + ":" + x;
-                return;
-            }
-            let r = set2.replace(temp, x);
-            set.innerHTML = r;
+                let r = set2.replace(temp, x);
+                if (x < 10) {
+                    r = set2.replace(temp, "0" + x)
+                }
+                set.innerHTML = r;
 
-        }
+            }
+        }, 1000);
     }
 }, 1000);
 
