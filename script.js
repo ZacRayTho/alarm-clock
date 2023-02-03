@@ -137,7 +137,7 @@ setInterval(function () {
                     set.innerHTML = y + ":0" + x;
                     return;
                 }
-
+                let z = set.innerHTML;
                 let r = z.replace(temp, x);
                 if (x < 10) {
                     r = z.replace(temp, "0" + x)
